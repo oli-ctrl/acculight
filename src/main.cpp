@@ -48,9 +48,10 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     
 
 MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
-
-    
     getLogger().info("lights");
+    getLogger().info("The current light env is: %d", lightId);
+if (lightId == 7){
+        getLogger().info("Correct env");
     if(percentage > 90) {
         //green
         color = UnityEngine::Color(0, 1, 0, 1);
@@ -78,6 +79,7 @@ MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWi
     }
     getLogger().info("lights update");
     LightsUpdater(self, lightId, color);
+    }
 }
 
 // Loads the config from disk using our modInfo, then returns it for use
