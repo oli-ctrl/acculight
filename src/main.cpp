@@ -9,6 +9,7 @@
 #include "UnityEngine/Color.hpp"
 #include "GlobalNamespace/ScoreModel.hpp"
 #include "UnityEngine/Resources.hpp"
+#include "GlobalNamespace/LightWithIdManager.hpp"
 
 
 
@@ -32,11 +33,6 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     getLogger().info("RESULT SCREEN OPENED :D");
 
     userScore = levelCompletionResults->modifiedScore;
-    getLogger().info("0");
-    auto beatmapDataTask = difficultyBeatmap->GetBeatmapDataBasicInfoAsync();
-        getLogger().info("1");
-    auto beatmapData = beatmapDataTask->get_Result();
-        getLogger().info("2");
     auto maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(self->transformedBeatmapData);
         getLogger().info("3");
 
@@ -51,7 +47,7 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     
     
 
-MAKE_HOOK_MATCH(LightsUpdater, &MenuLightsManager::SetColor, void, MenuLightsManager *self, int lightId, UnityEngine::Color color){
+MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
 
     
     getLogger().info("lights");
@@ -74,7 +70,7 @@ MAKE_HOOK_MATCH(LightsUpdater, &MenuLightsManager::SetColor, void, MenuLightsMan
         color = UnityEngine::Color(1, 0, 1, 1);
     }
     else if(percentage < 50) {
-    //red
+        //white
         color = UnityEngine::Color(1, 1, 1, 1);
     }
     else{
