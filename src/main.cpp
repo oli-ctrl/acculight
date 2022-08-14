@@ -10,8 +10,8 @@
 #include "GlobalNamespace/ScoreModel.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "GlobalNamespace/LightWithIdManager.hpp"
-
-
+#include "GlobalNamespace/SoloModeSelectionViewController.hpp"
+#include "GlobalNamespace/GameplaySetupViewController.hpp"
 
 
 
@@ -21,10 +21,9 @@ using namespace UnityEngine;
 
 
 
+
 float percentage, userScore;
-
-
-
+bool inSongComplete ;
 
 
 // calculate percentage things
@@ -41,17 +40,40 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
 
-    UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
-    };
+    inSongComplete = true;
+    getLogger().info("result screen song complete %d", inSongComplete);
+    }
     
+
+
+
+MAKE_HOOK_MATCH(SongSelectUI, &SoloModeSelectionViewController::DidActivate, void, SoloModeSelectionViewController*self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
+    SongSelectUI( self, firstActivation, addedToHierarchy, screenSystemEnabling);
+
+
+    inSongComplete = false;
+    getLogger().info("song select song complete%d", inSongComplete);
+}
     
-    
+MAKE_HOOK_MATCH(Playing, &GameplaySetupViewController::DidActivate, void, GameplaySetupViewController*self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
+    Playing( self, firstActivation, addedToHierarchy, screenSystemEnabling);
+
+
+    inSongComplete = false;
+     getLogger().info("playing song complete %d", inSongComplete);
+}
 
 MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
     getLogger().info("lights");
     getLogger().info("The current light env is: %d", lightId);
-if (lightId == 7){
+if (inSongComplete == true){
         getLogger().info("Correct env");
+        getLogger().info("the current color is %d", color);
+    if(percentage > 95) {
+        //green
+        color = UnityEngine::Color(0, 1, 1, 1);
+        
+    }
     if(percentage > 90) {
         //green
         color = UnityEngine::Color(0, 1, 0, 1);
@@ -74,13 +96,10 @@ if (lightId == 7){
         //white
         color = UnityEngine::Color(1, 1, 1, 1);
     }
-    else{
-        color = UnityEngine::Color(1, 1, 1., 1);
     }
     getLogger().info("lights update");
     LightsUpdater(self, lightId, color);
     }
-}
 
 // Loads the config from disk using our modInfo, then returns it for use
 // other config tools such as config-utils don't use this config, so it can be removed if those are in use
@@ -110,7 +129,10 @@ extern "C" void load() {
     il2cpp_functions::Init();
 
     getLogger().info("Installing hooks...");
+        INSTALL_HOOK(getLogger(),SongSelectUI)
+        INSTALL_HOOK(getLogger(),Playing)
         INSTALL_HOOK(getLogger(),ResultsScreenUI);
         INSTALL_HOOK(getLogger(),LightsUpdater)
+        
     getLogger().info("Installed all hooks!");
 }
