@@ -10,10 +10,14 @@
 #include "GlobalNamespace/ScoreModel.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "GlobalNamespace/LightWithIdManager.hpp"
-#include "GlobalNamespace/SoloModeSelectionViewController.hpp"
+#include "GlobalNamespace/LevelSearchViewController.hpp"
 #include "GlobalNamespace/GameplaySetupViewController.hpp"
+#include "MainConfig.hpp"
+#include "questui/shared/QuestUI.hpp"
+#include "questui/shared/BeatSaberUI.hpp"
+#include "GlobalNamespace/LevelCollectionViewController.hpp"
 
-
+DEFINE_CONFIG(MainConfig)
 
 static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to the modloader upon startup
 using namespace GlobalNamespace;
@@ -23,7 +27,7 @@ using namespace UnityEngine;
 
 
 float percentage, userScore;
-bool inSongComplete ;
+bool updatelights ;
 
 
 // calculate percentage things
@@ -40,66 +44,85 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
 
-    inSongComplete = true;
-    getLogger().info("result screen song complete %d", inSongComplete);
+    updatelights = true;
+    getLogger().info("result screen song complete %d", updatelights);
     }
     
 
 
-
-MAKE_HOOK_MATCH(SongSelectUI, &SoloModeSelectionViewController::DidActivate, void, SoloModeSelectionViewController*self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
-    SongSelectUI( self, firstActivation, addedToHierarchy, screenSystemEnabling);
-
-
-    inSongComplete = false;
-    getLogger().info("song select song complete%d", inSongComplete);
-}
+// song select open, toggle change light false unless 
+MAKE_HOOK_MATCH(Song_select, &LevelCollectionViewController::DidActivate, void , LevelCollectionViewController *self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
+    Song_select( self, firstActivation, addedToHierarchy, screenSystemEnabling);
     
+getLogger().info("song select open");
+ if (getMainConfig().In_Menu.GetValue() == false){
+        updatelights = false;
+        getLogger().info("false - song select song complete%d", updatelights);
+        }
+ else if (getMainConfig().In_Menu.GetValue()){
+        updatelights = true;
+        getLogger().info("true - song select song complete%d", updatelights);
+        }    
+}
+
+// open song   
 MAKE_HOOK_MATCH(Playing, &GameplaySetupViewController::DidActivate, void, GameplaySetupViewController*self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
     Playing( self, firstActivation, addedToHierarchy, screenSystemEnabling);
+    getLogger().info("gameplay view");
 
-
-    inSongComplete = false;
-     getLogger().info("playing song complete %d", inSongComplete);
+    updatelights = false;
+     getLogger().info("playing song complete %d", updatelights);
+}
+// main menu 
+MAKE_HOOK_MATCH(Main_menu, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController*self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+Main_menu( self, firstActivation, addedToHierarchy, screenSystemEnabling);
+getLogger().info("main menu");
+    updatelights = false;
+     getLogger().info("Main menu %d", updatelights);
 }
 
+
+// manage the lights and change depending on accuracy 
 MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
-    getLogger().info("lights");
-    getLogger().info("The current light env is: %d", lightId);
-if (inSongComplete == true){
-        getLogger().info("Correct env");
-        getLogger().info("the current color is %d", color);
-    if(percentage > 95) {
-        //green
-        color = UnityEngine::Color(0, 1, 1, 1);
-        
-    }
-    if(percentage > 90) {
-        //green
-        color = UnityEngine::Color(0, 1, 0, 1);
-        
-    }
-    else if(percentage > 80) {
-        //cyan
-        color = UnityEngine::Color(0, 1, 1, 1);
-        
-    }
-    else if(percentage > 70) {
-        //blue
-        color = UnityEngine::Color(0, 0, 1, 1);
-    }
-    else if(percentage > 60) {
-        //magenta
-        color = UnityEngine::Color(1, 0, 1, 1);
-    }
-    else if(percentage < 50) {
-        //white
-        color = UnityEngine::Color(1, 1, 1, 1);
-    }
-    }
-    getLogger().info("lights update");
-    LightsUpdater(self, lightId, color);
-    }
+if (getMainConfig().Mod_active.GetValue()){
+    if (updatelights == true){
+            getLogger().info("Correct env");
+
+
+
+        if(percentage > 95) {
+            //green
+            color = UnityEngine::Color(0, 1, 1, 1);
+            
+        }
+        if(percentage > 90) {
+            //green
+            color = UnityEngine::Color(0, 1, 0, 1);
+            
+        }
+        else if(percentage > 80) {
+            //cyan
+            color = UnityEngine::Color(0, 1, 1, 1);
+            
+        }
+        else if(percentage > 70) {
+            //blue
+            color = UnityEngine::Color(0, 0, 1, 1);
+        }
+        else if(percentage > 60) {
+            //magenta
+            color = UnityEngine::Color(1, 0, 1, 1);
+        }
+        else if(percentage < 50) {
+            //white
+            color = UnityEngine::Color(1, 1, 1, 1);
+        }
+        }
+        }
+        LightsUpdater(self, lightId, color);
+        }
+
+
 
 // Loads the config from disk using our modInfo, then returns it for use
 // other config tools such as config-utils don't use this config, so it can be removed if those are in use
@@ -107,6 +130,27 @@ Configuration& getConfig() {
     static Configuration config(modInfo);
     return config;
 }
+
+// ui stuffs
+void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+    // Create our UI elements only when shown for the first time.
+    if(firstActivation) {
+        // Create a container that has a scroll bar.
+        GameObject* container = QuestUI::BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
+       
+        QuestUI::BeatSaberUI::CreateText(container->get_transform(), "The mod config, change these settings or completely turn off the mod!");
+
+        // the mod active toggle
+        QuestUI::BeatSaberUI::CreateToggle(container->get_transform(), "Mod Enabled", getMainConfig().Mod_active.GetValue(), [](bool value) {
+		getMainConfig().Mod_active.SetValue(value, true);
+        });
+        // the enable in song select toggle
+        QuestUI::BeatSaberUI::CreateToggle(container->get_transform(), "Enable in song select", getMainConfig().In_Menu.GetValue(), [](bool value) {
+		getMainConfig().In_Menu.SetValue(value, true);
+        });
+
+    }
+}       
 
 // Returns a logger, useful for printing debug messages
 Logger& getLogger() {
@@ -120,6 +164,8 @@ extern "C" void setup(ModInfo& info) {
     info.version = VERSION;
     modInfo = info;
 	
+
+    
     getConfig().Load();
     getLogger().info("Completed setup!");
 }
@@ -127,9 +173,15 @@ extern "C" void setup(ModInfo& info) {
 // Called later on in the game loading - a good time to install function hooks
 extern "C" void load() {            
     il2cpp_functions::Init();
+    getMainConfig().Init(modInfo);
+
+    QuestUI::Init();
+    QuestUI::Register::RegisterModSettingsViewController(modInfo, DidActivate);
+    QuestUI::Register::RegisterMainMenuModSettingsViewController(modInfo, DidActivate);
 
     getLogger().info("Installing hooks...");
-        INSTALL_HOOK(getLogger(),SongSelectUI)
+        INSTALL_HOOK(getLogger(),Main_menu)
+        INSTALL_HOOK(getLogger(),Song_select)
         INSTALL_HOOK(getLogger(),Playing)
         INSTALL_HOOK(getLogger(),ResultsScreenUI);
         INSTALL_HOOK(getLogger(),LightsUpdater)
