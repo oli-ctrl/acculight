@@ -64,14 +64,22 @@ getLogger().info("song select open");
         getLogger().info("true - song select song complete%d", updatelights);
         }    
 }
+MAKE_HOOK_MATCH(Song_select_exit, &LevelCollectionViewController::DidDeactivate, void , LevelCollectionViewController *self , bool removedFromHierarchy, bool screenSystemDisabling){
+    Song_select_exit( self, removedFromHierarchy, screenSystemDisabling);
+  
+    getLogger().info("gameplay view leaving");
+    updatelights = false;
+}
 
-// open song   
-MAKE_HOOK_MATCH(Playing, &GameplaySetupViewController::DidActivate, void, GameplaySetupViewController*self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
+// open song 
+MAKE_HOOK_MATCH(Playing, &GameplaySetupViewController::DidActivate, void, GameplaySetupViewController *self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
     Playing( self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    getLogger().info("gameplay view");
+    getLogger().info("starting song");
 
     updatelights = false;
-     getLogger().info("playing song complete %d", updatelights);
+}
+
+
 }
 // main menu 
 MAKE_HOOK_MATCH(Main_menu, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController*self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -86,36 +94,36 @@ getLogger().info("main menu");
 MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
 if (getMainConfig().Mod_active.GetValue()){
     if (updatelights == true){
-            getLogger().info("Correct env");
+            getLogger().info("updating lights");
 
 
 
         if(percentage > 95) {
-            //green
-            color = UnityEngine::Color(0, 1, 1, 1);
+            //purple
+            color = UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75);
             
         }
         if(percentage > 90) {
             //green
-            color = UnityEngine::Color(0, 1, 0, 1);
+            color = UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75);
             
         }
         else if(percentage > 80) {
             //cyan
-            color = UnityEngine::Color(0, 1, 1, 1);
+            color = UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75);
             
         }
         else if(percentage > 70) {
             //blue
-            color = UnityEngine::Color(0, 0, 1, 1);
+            color = UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75);
         }
         else if(percentage > 60) {
             //magenta
-            color = UnityEngine::Color(1, 0, 1, 1);
+            color = UnityEngine::Color(0.8984375,0.4140625,0.8203125,0.75);
         }
         else if(percentage < 50) {
             //white
-            color = UnityEngine::Color(1, 1, 1, 1);
+            color = UnityEngine::Color(1, 1, 1, 0.75);
         }
         }
         }
@@ -185,6 +193,6 @@ extern "C" void load() {
         INSTALL_HOOK(getLogger(),Playing)
         INSTALL_HOOK(getLogger(),ResultsScreenUI);
         INSTALL_HOOK(getLogger(),LightsUpdater)
-        
+        INSTALL_HOOK(getLogger(),Song_select_exit)
     getLogger().info("Installed all hooks!");
 }
