@@ -34,7 +34,8 @@ bool updatelights ;
 MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore){
     ResultsScreenUI(self,levelCompletionResults,transformedBeatmapData,difficultyBeatmap,practice,newHighScore);
     getLogger().info("RESULT SCREEN OPENED :D");
-
+    updatelights = true;
+    
     userScore = levelCompletionResults->modifiedScore;
     auto maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(self->transformedBeatmapData);
         getLogger().info("3");
@@ -44,7 +45,7 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
 
-    updatelights = true;
+    
     getLogger().info("result screen song complete %d", updatelights);
     }
     
