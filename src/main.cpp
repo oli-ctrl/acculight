@@ -64,23 +64,18 @@ getLogger().info("song select open");
         getLogger().info("true - song select song complete%d", updatelights);
         }    
 }
-MAKE_HOOK_MATCH(Song_select_exit, &LevelCollectionViewController::DidDeactivate, void , LevelCollectionViewController *self , bool removedFromHierarchy, bool screenSystemDisabling){
+
+MAKE_HOOK_MATCH(Song_select_exit, &LevelCollectionViewController::DidDeactivate, void, LevelCollectionViewController *self,bool removedFromHierarchy, bool screenSystemDisabling){
     Song_select_exit( self, removedFromHierarchy, screenSystemDisabling);
-  
-    getLogger().info("gameplay view leaving");
+    getLogger().info("leaving main menu");
     updatelights = false;
 }
+
 
 // open song 
-MAKE_HOOK_MATCH(Playing, &GameplaySetupViewController::DidActivate, void, GameplaySetupViewController *self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
-    Playing( self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    getLogger().info("starting song");
-
-    updatelights = false;
-}
 
 
-}
+
 // main menu 
 MAKE_HOOK_MATCH(Main_menu, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController*self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
 Main_menu( self, firstActivation, addedToHierarchy, screenSystemEnabling);
@@ -190,9 +185,8 @@ extern "C" void load() {
     getLogger().info("Installing hooks...");
         INSTALL_HOOK(getLogger(),Main_menu)
         INSTALL_HOOK(getLogger(),Song_select)
-        INSTALL_HOOK(getLogger(),Playing)
         INSTALL_HOOK(getLogger(),ResultsScreenUI);
-        INSTALL_HOOK(getLogger(),LightsUpdater)
-        INSTALL_HOOK(getLogger(),Song_select_exit)
+        INSTALL_HOOK(getLogger(),LightsUpdater);
+        INSTALL_HOOK(getLogger(),Song_select_exit);
     getLogger().info("Installed all hooks!");
 }
