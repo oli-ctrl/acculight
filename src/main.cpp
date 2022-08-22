@@ -16,6 +16,9 @@
 #include "questui/shared/QuestUI.hpp"
 #include "questui/shared/BeatSaberUI.hpp"
 #include "GlobalNamespace/LevelCollectionViewController.hpp"
+#include "GlobalNamespace/LevelSearchViewController.hpp"
+#include "GlobalNamespace/SongController.hpp"
+#include "System/Action.hpp"
 
 DEFINE_CONFIG(MainConfig)
 
@@ -24,10 +27,9 @@ using namespace GlobalNamespace;
 using namespace UnityEngine;
 
 
-
-
 float percentage, userScore;
-bool updatelights ;
+bool updatelights;
+
 
 
 // calculate percentage things
@@ -35,20 +37,20 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     ResultsScreenUI(self,levelCompletionResults,transformedBeatmapData,difficultyBeatmap,practice,newHighScore);
     getLogger().info("RESULT SCREEN OPENED :D");
     updatelights = true;
+
     
     userScore = levelCompletionResults->modifiedScore;
     auto maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(self->transformedBeatmapData);
-        getLogger().info("3");
-
-
     percentage = (userScore /maxScore) * 100;
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
-
+    UnityEngine::Object::FindObjectOfType<GlobalNamespace::MenuLightsManager*>()->RefreshColors();
     
     getLogger().info("result screen song complete %d", updatelights);
-    }
+
+    };
     
+
 
 
 // song select open, toggle change light false unless 
@@ -64,16 +66,17 @@ getLogger().info("song select open");
         updatelights = true;
         getLogger().info("true - song select song complete%d", updatelights);
         }    
+            UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
 }
 
+
+
+//leave song select
 MAKE_HOOK_MATCH(Song_select_exit, &LevelCollectionViewController::DidDeactivate, void, LevelCollectionViewController *self,bool removedFromHierarchy, bool screenSystemDisabling){
     Song_select_exit( self, removedFromHierarchy, screenSystemDisabling);
     getLogger().info("leaving main menu");
     updatelights = false;
 }
-
-
-// open song 
 
 
 
@@ -86,9 +89,11 @@ getLogger().info("main menu");
 }
 
 
-// manage the lights and change depending on accuracy 
+
+//manage the lights and change depending on accuracy 
 MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
 if (getMainConfig().Mod_active.GetValue()){
+     getLogger().info("lights update hook: %d", updatelights);
     if (updatelights == true){
             getLogger().info("updating lights");
 
@@ -99,7 +104,7 @@ if (getMainConfig().Mod_active.GetValue()){
             color = UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75);
             
         }
-        if(percentage > 90) {
+        else if(percentage > 90) {
             //green
             color = UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75);
             
