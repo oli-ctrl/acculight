@@ -29,7 +29,7 @@ using namespace UnityEngine;
 
 float percentage, userScore;
 bool updatelights;
-
+GlobalNamespace::MenuLightsManager *menuLightsmanager;
 
 
 // calculate percentage things
@@ -44,12 +44,46 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     percentage = (userScore /maxScore) * 100;
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
-    UnityEngine::Object::FindObjectOfType<GlobalNamespace::MenuLightsManager*>()->RefreshColors();
-    
+    menuLightsmanager = UnityEngine::Object::FindObjectOfType<GlobalNamespace::MenuLightsManager*>();
+
+    if (getMainConfig().Mod_active.GetValue()){
+    getLogger().info("lights update hook: %d", updatelights);
+            getLogger().info("updating lights");
+
+
+
+        if(percentage > 95) {
+            //purple
+            menuLightsmanager-> SetColor(1, UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75));
+            
+        }
+        else if(percentage > 90) {
+            //green
+            menuLightsmanager-> SetColor(1, UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
+            
+        }
+        else if(percentage > 80) {
+            //cyan
+            menuLightsmanager-> SetColor(1, UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
+            
+        }
+        else if(percentage > 70) {
+            //blue
+            menuLightsmanager-> SetColor(1, UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75));
+        }
+        else if(percentage > 60) {
+            //magenta
+            menuLightsmanager-> SetColor(1, UnityEngine::Color(0.8984375,0.4140625,0.8203125,0.75));
+        }
+        else if(percentage < 50) {
+            //white
+            menuLightsmanager-> SetColor(1, UnityEngine::Color(1, 1, 1, 0.75));
+        }
+        }
+
     getLogger().info("result screen song complete %d", updatelights);
 
     };
-    
 
 
 
@@ -66,7 +100,6 @@ getLogger().info("song select open");
         updatelights = true;
         getLogger().info("true - song select song complete%d", updatelights);
         }    
-            UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
 }
 
 
