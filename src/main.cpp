@@ -44,7 +44,16 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     percentage = (userScore /maxScore) * 100;
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
-    menuLightsmanager = UnityEngine::Object::FindObjectOfType<GlobalNamespace::MenuLightsManager*>();
+
+
+    getLogger().info("result screen song complete %d", updatelights);
+
+    };
+
+MAKE_HOOK_MATCH(Results_lights, &ResultsViewController::DidActivate, void, ResultsViewController *self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
+        
+
+        menuLightsmanager = UnityEngine::Object::FindObjectOfType<GlobalNamespace::MenuLightsManager*>();
 
     if (getMainConfig().Mod_active.GetValue()){
     getLogger().info("lights update hook: %d", updatelights);
@@ -80,11 +89,8 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
             menuLightsmanager-> SetColor(1, UnityEngine::Color(1, 1, 1, 0.75));
         }
         }
-
-    getLogger().info("result screen song complete %d", updatelights);
-
-    };
-
+    Results_lights( self, firstActivation, addedToHierarchy, screenSystemEnabling);
+}
 
 
 // song select open, toggle change light false unless 
@@ -222,6 +228,7 @@ extern "C" void load() {
     QuestUI::Register::RegisterMainMenuModSettingsViewController(modInfo, DidActivate);
 
     getLogger().info("Installing hooks...");
+        INSTALL_HOOK(getLogger(),Results_lights)
         INSTALL_HOOK(getLogger(),Main_menu)
         INSTALL_HOOK(getLogger(),Song_select)
         INSTALL_HOOK(getLogger(),ResultsScreenUI);
