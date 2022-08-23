@@ -162,82 +162,81 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         });
 
         QuestUI::BeatSaberUI::CreateText(container->get_transform(), "change the colors depending on the accuracy");
-
-        auto colorPicker95 = BeatSaberUI::CreateColorPicker (container->get_transform(), "     above 95 %", getMainConfig().above_95.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker95 = BeatSaberUI::CreateColorPicker (container->get_transform(), "above 95 %", getMainConfig().above_95.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_95.SetValue(color, true); 
         });
-
-        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 95%",
-            [colorPicker95]()
+        
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker95->get_transform(), "Reset above 95%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker95]()
             {
-            getMainConfig().above_95.SetValue(UnityEngine::Color(0.99609375,0.99609375,0.0,0.75));
-            colorPicker95->set_currentColor(getMainConfig().above_95.GetValue());
+                getMainConfig().above_95.SetValue(UnityEngine::Color(0.99609375,0.99609375,0.0,0.75));
+                colorPicker95->set_currentColor(getMainConfig().above_95.GetValue());
             });
 
-        auto colorPicker90 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 90 %", getMainConfig().above_90.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker90 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 90 %", getMainConfig().above_90.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_90.SetValue(color, true); 
         });
 
-        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 90%",
-            [colorPicker90]()
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker90->get_transform(), "Reset above 90%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker90]()
             {
-            getMainConfig().above_90.SetValue(UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
-            colorPicker90->set_currentColor(getMainConfig().above_90.GetValue());
+                getMainConfig().above_90.SetValue(UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
+                colorPicker90->set_currentColor(getMainConfig().above_90.GetValue());
             });
 
-        auto colorPicker80 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 80 %", getMainConfig().above_80.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker80 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 80 %", getMainConfig().above_80.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_80.SetValue(color, true); 
         });
 
-        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 80%",
-            [colorPicker80]()
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker80->get_transform(), "Reset above 80%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker80]()
             {
-            getMainConfig().above_80.SetValue(UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
-            colorPicker80->set_currentColor(getMainConfig().above_80.GetValue());
+                getMainConfig().above_80.SetValue(UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
+                colorPicker80->set_currentColor(getMainConfig().above_80.GetValue());
             });
 
-        auto colorPicker70 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 70 %", getMainConfig().above_70.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker70 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 70 %", getMainConfig().above_70.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_70.SetValue(color, true);
         });
 
-        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 70%",
-            [colorPicker70]()
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker70->get_transform(), "Reset above 70%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker70]()
             {
                 getMainConfig().above_70.SetValue(UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75));
                 colorPicker70->set_currentColor(getMainConfig().above_70.GetValue());
             });
-        auto colorPicker60 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 60 %", getMainConfig().above_60.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker60 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 60 %", getMainConfig().above_60.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_60.SetValue(color, true); 
         });
 
-        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 60%",
-            [colorPicker60]()
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker60->get_transform(), "Reset above 60%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker60]()
             {
-            getMainConfig().above_60.SetValue(UnityEngine::Color(0.47265625,0.32421875,0.99609375,0.75));
-            colorPicker60->set_currentColor(getMainConfig().above_60.GetValue());
+                getMainConfig().above_60.SetValue(UnityEngine::Color(0.47265625,0.32421875,0.99609375,0.75));
+                colorPicker60->set_currentColor(getMainConfig().above_60.GetValue());
             });
 
-        auto colorPicker50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 50 %", getMainConfig().above_50.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 50 %", getMainConfig().above_50.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_50.SetValue(color, true);
         });
 
-        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 50%",
-            [colorPicker50]()
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker50->get_transform(), "Reset above 50%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker50]()
             {
-            getMainConfig().above_50.SetValue(UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
-            colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
+                getMainConfig().above_50.SetValue(UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
+                colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
             });
 
-        auto colorPicker_50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        below 50 %", getMainConfig().below_50.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker_50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "below 50 %", getMainConfig().below_50.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().below_50.SetValue(color, true); 
             
         });
 
-        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset below 50%",
-            [colorPicker_50]()
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker_50->get_transform(), "Reset below 50%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker_50]()
             {
-            getMainConfig().below_50.SetValue(UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
-            colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
+                getMainConfig().below_50.SetValue(UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
+                colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
             });
 
 

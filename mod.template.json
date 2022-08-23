@@ -1,6 +1,6 @@
   {
   "$schema": "https://raw.githubusercontent.com/Lauriethefish/QuestPatcher.QMod/main/QuestPatcher.QMod/Resources/qmod.schema.json",
-  "_QPVersion": "0.1.1",
+  "_QPVersion": "0.1.0",
   "name": "${mod_name}",
   "id": "${mod_id}",
   "author": "Oli",
