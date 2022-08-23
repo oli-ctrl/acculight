@@ -40,7 +40,7 @@ GlobalNamespace::MenuLightsManager *menuLightsmanager;
 MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore){
     ResultsScreenUI(self,levelCompletionResults,transformedBeatmapData,difficultyBeatmap,practice,newHighScore);
     getLogger().info("RESULT SCREEN OPENED :D");
-    updatelights = true;
+    
 
     
     userScore = levelCompletionResults->modifiedScore;
@@ -53,7 +53,8 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
 
 
     getLogger().info("result screen song complete %d", updatelights);
-
+    updatelights = true;
+    UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
     };
 
 
@@ -61,16 +62,8 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
 // song select open, toggle change light false unless 
 MAKE_HOOK_MATCH(Song_select, &LevelCollectionViewController::DidActivate, void , LevelCollectionViewController *self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
     Song_select( self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    
-getLogger().info("song select open");
- if (getMainConfig().In_Menu.GetValue() == false){
-        updatelights = false;
-        getLogger().info("false - song select song complete%d", updatelights);
-        }
- else if (getMainConfig().In_Menu.GetValue()){
         updatelights = true;
-        getLogger().info("true - song select song complete%d", updatelights);
-        }    
+        getLogger().info("true - song select song complete%d", updatelights);   
 }
 
 
@@ -89,94 +82,94 @@ MAKE_HOOK_MATCH(Main_menu, &GlobalNamespace::MainMenuViewController::DidActivate
 Main_menu( self, firstActivation, addedToHierarchy, screenSystemEnabling);
 getLogger().info("main menu");
     updatelights = false;
-    
     (getMainConfig().updatelights_preview.SetValue(false));
-     getLogger().info("Main menu %d", updatelights);
+    UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
+    getLogger().info("Main menu %d", updatelights);
 }
 
 
 
 //manage the lights and change depending on accuracy 
 MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
-    if (getMainConfig().Mod_active.GetValue()){
-        getLogger().info("lights update hook: %d", updatelights);
-        if (updatelights == true){
-                getLogger().info("updating lights");
+    getLogger().info("lights update hook: %d", updatelights);
+    if (updatelights == true){
+        getLogger().info("updating lights");
 
 
 
-            if(getMainConfig().last_acc.GetValue() > 95) {
-                //purple
-                color = getMainConfig().above_95.GetValue();
-                
-            }
-            else if(getMainConfig().last_acc.GetValue() > 90) {
-                //green
-                color = getMainConfig().above_90.GetValue();
-                
-            }
-            else if(getMainConfig().last_acc.GetValue() > 80) {
-                //cyan
-                color = getMainConfig().above_80.GetValue();
-                
-            }
-            else if(getMainConfig().last_acc.GetValue() > 70) {
-                //blue
-                color = getMainConfig().above_70.GetValue();
-            }
-            else if(getMainConfig().last_acc.GetValue() > 60) {
-                //magenta
-                color = getMainConfig().above_60.GetValue();
-            }
-            else if (getMainConfig().last_acc.GetValue() >50){
-                color = getMainConfig().above_50.GetValue();
-            }
-            else if(getMainConfig().last_acc.GetValue() < 50 and getMainConfig().last_acc.GetValue() != 0) {
-                    color = getMainConfig().below_50.GetValue();
-                
-            }
-        }
+        if(getMainConfig().last_acc.GetValue() > 95) {
+            //purple
+            color = getMainConfig().above_95.GetValue();
             
-        else if ((getMainConfig().updatelights_preview.GetValue()) == true){
-            getLogger().info("updating lights");
+        }
+        else if(getMainConfig().last_acc.GetValue() > 90) {
+            //green
+            color = getMainConfig().above_90.GetValue();
+            
+        }
+        else if(getMainConfig().last_acc.GetValue() > 80) {
+            //cyan
+            color = getMainConfig().above_80.GetValue();
+            
+        }
+        else if(getMainConfig().last_acc.GetValue() > 70) {
+            //blue
+            color = getMainConfig().above_70.GetValue();
+        }
+        else if(getMainConfig().last_acc.GetValue() > 60) {
+            //magenta
+            color = getMainConfig().above_60.GetValue();
+        }
+        else if (getMainConfig().last_acc.GetValue() >50){
+            color = getMainConfig().above_50.GetValue();
+        }
+        else if(getMainConfig().last_acc.GetValue() < 50 and getMainConfig().last_acc.GetValue() != 0) {
+                color = getMainConfig().below_50.GetValue();
+            
+        }
+    }
+        
+    else if ((getMainConfig().updatelights_preview.GetValue()) == true){
+        getLogger().info("updating lights");
 
 
 
-            if(preview_acc > 95) {
-                //purple
-                color = getMainConfig().above_95.GetValue();
-                
-            }
-            else if(preview_acc > 90) {
-                //green
-                color = getMainConfig().above_90.GetValue();
-                
-            }
-            else if(preview_acc > 80) {
-                //cyan
-                color = getMainConfig().above_80.GetValue();
-                
-            }
-            else if(preview_acc > 70) {
-                //blue
-                color = getMainConfig().above_70.GetValue();
-            }
-            else if(preview_acc > 60) {
-                //magenta
-                color = getMainConfig().above_60.GetValue();
-            }
-            else if (preview_acc){
-                color = getMainConfig().above_50.GetValue();
-            }
-            else if(preview_acc < 50) {
-                    color = getMainConfig().below_50.GetValue();
-                
-            }
+        if(preview_acc > 95) {
+            //purple
+            color = getMainConfig().above_95.GetValue();
+            
+        }
+        else if(preview_acc > 90) {
+            //green
+            color = getMainConfig().above_90.GetValue();
+            
+        }
+        else if(preview_acc > 80) {
+            //cyan
+            color = getMainConfig().above_80.GetValue();
+            
+        }
+        else if(preview_acc > 70) {
+            //blue
+            color = getMainConfig().above_70.GetValue();
+        }
+        else if(preview_acc > 60) {
+            //magenta
+            color = getMainConfig().above_60.GetValue();
+        }
+        else if (preview_acc){
+            color = getMainConfig().above_50.GetValue();
+        }
+        else if(preview_acc < 50) {
+                color = getMainConfig().below_50.GetValue();
+            
         }
     }
     LightsUpdater(self, lightId, color);
-    
 }
+
+
+
 
 
 
@@ -194,14 +187,7 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         // Create a container that has a scroll bar.
         GameObject* container = QuestUI::BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
        
-        QuestUI::BeatSaberUI::CreateText(container->get_transform(), "The mod config, change these settings or completely turn off the mod!");
-
-        // the mod active toggle
-        QuestUI::BeatSaberUI::CreateToggle(container->get_transform(), "Mod Enabled", getMainConfig().Mod_active.GetValue(), [](bool value) {
-		getMainConfig().Mod_active.SetValue(value, true);
-        });
-
-        QuestUI::BeatSaberUI::CreateText(container->get_transform(), "change the colors depending on the accuracy");
+        QuestUI::BeatSaberUI::CreateText(container->get_transform(), "change the color presets here:");
         auto colorPicker95 = BeatSaberUI::CreateColorPicker (container->get_transform(), "above 95 %", getMainConfig().above_95.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_95.SetValue(color, true);
             (getMainConfig().updatelights_preview.SetValue(true));
@@ -326,6 +312,8 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             colorPicker60->set_currentColor(getMainConfig().above_60.GetValue());
             colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
             colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
+            preview_acc = 0;
+            UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
         });
     }
 }       
