@@ -6,7 +6,7 @@ DECLARE_CONFIG(MainConfig,
     CONFIG_VALUE(Mod_active, bool, "Enabled", true);
     CONFIG_VALUE(In_Menu, bool, "Enabled", true);
     CONFIG_VALUE(last_acc, float, "last accuracy", 0)
-    CONFIG_VALUE(above_95, UnityEngine::Color, "above 95%", UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75));
+    CONFIG_VALUE(above_95, UnityEngine::Color, "above 95%", UnityEngine::Color(0.99609375,0.99609375,0.0,0.75));
     CONFIG_VALUE(above_90, UnityEngine::Color, "above 90%", UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
     CONFIG_VALUE(above_80, UnityEngine::Color, "above 80%", UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
     CONFIG_VALUE(above_70, UnityEngine::Color, "above 70%", UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75));

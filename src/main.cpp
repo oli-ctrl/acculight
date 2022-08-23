@@ -170,7 +170,7 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 95%",
             [colorPicker95]()
             {
-            getMainConfig().above_95.SetValue(UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75));
+            getMainConfig().above_95.SetValue(UnityEngine::Color(0.99609375,0.99609375,0.0,0.75));
             colorPicker95->set_currentColor(getMainConfig().above_95.GetValue());
             });
 
@@ -244,7 +244,7 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset all colors",
         [colorPicker50,colorPicker60,colorPicker70,colorPicker80,colorPicker90,colorPicker_50,colorPicker95]()
         {
-            getMainConfig().above_95.SetValue(UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75));
+            getMainConfig().above_95.SetValue(UnityEngine::Color(0.99609375,0.99609375,0.0,0.75));
             getMainConfig().above_90.SetValue(UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
             getMainConfig().above_80.SetValue(UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
             getMainConfig().above_70.SetValue(UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75));
