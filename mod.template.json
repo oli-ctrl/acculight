@@ -6,10 +6,10 @@
   "author": "Oli",
   "version": "0.1.0",
   "packageId": "com.beatgames.beatsaber",
+  "coverImage": "cover.png",
   "packageVersion": "1.22.0",
   "description": "changes the lighting on the result screen depending on the accuracy gained in the song",
-  "dependencies": [],
-  "coverImage": "cover.png",
+  "dependencies": [],,
   "modFiles": [],
   "libraryFiles": [],
   "fileCopies": []

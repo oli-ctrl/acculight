@@ -20,12 +20,16 @@
 #include "GlobalNamespace/SongController.hpp"
 #include "System/Action.hpp"
 
+
+
+
 DEFINE_CONFIG(MainConfig)
 
 static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to the modloader upon startup
 using namespace GlobalNamespace;
 using namespace UnityEngine;
-
+using namespace QuestUI;
+using namespace QuestUI::BeatSaberUI;
 
 float percentage, userScore;
 bool updatelights;
@@ -42,6 +46,8 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     userScore = levelCompletionResults->modifiedScore;
     auto maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(self->transformedBeatmapData);
     percentage = (userScore /maxScore) * 100;
+
+    getMainConfig().last_acc.SetValue(percentage, true);
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
 
@@ -97,32 +103,35 @@ if (getMainConfig().Mod_active.GetValue()){
 
 
 
-        if(percentage > 95) {
+        if(getMainConfig().last_acc.GetValue() > 95) {
             //purple
-            color = UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75);
+            color = getMainConfig().above_95.GetValue();
             
         }
-        else if(percentage > 90) {
+        else if(getMainConfig().last_acc.GetValue() > 90) {
             //green
-            color = UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75);
+            color = getMainConfig().above_90.GetValue();
             
         }
-        else if(percentage > 80) {
+        else if(getMainConfig().last_acc.GetValue() > 80) {
             //cyan
-            color = UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75);
+            color = getMainConfig().above_80.GetValue();
             
         }
-        else if(percentage > 70) {
+        else if(getMainConfig().last_acc.GetValue() > 70) {
             //blue
-            color = UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75);
+            color = getMainConfig().above_70.GetValue();
         }
-        else if(percentage > 60) {
+        else if(getMainConfig().last_acc.GetValue() > 60) {
             //magenta
-            color = UnityEngine::Color(0.8984375,0.4140625,0.8203125,0.75);
+            color = getMainConfig().above_60.GetValue();
         }
-        else if(percentage < 50) {
-            //white
-            color = UnityEngine::Color(1, 1, 1, 0.75);
+        else if (getMainConfig().last_acc.GetValue() >50){
+            color = getMainConfig().above_50.GetValue();
+        }
+        else if(getMainConfig().last_acc.GetValue() < 50 and getMainConfig().last_acc.GetValue() != 0) {
+                color = getMainConfig().below_50.GetValue();
+            
         }
         }
         }
@@ -151,11 +160,105 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         QuestUI::BeatSaberUI::CreateToggle(container->get_transform(), "Mod Enabled", getMainConfig().Mod_active.GetValue(), [](bool value) {
 		getMainConfig().Mod_active.SetValue(value, true);
         });
-        // the enable in song select toggle
-        QuestUI::BeatSaberUI::CreateToggle(container->get_transform(), "Enable in song select", getMainConfig().In_Menu.GetValue(), [](bool value) {
-		getMainConfig().In_Menu.SetValue(value, true);
+
+        QuestUI::BeatSaberUI::CreateText(container->get_transform(), "change the colors depending on the accuracy");
+
+        auto colorPicker95 = BeatSaberUI::CreateColorPicker (container->get_transform(), "     above 95 %", getMainConfig().above_95.GetValue(),[](UnityEngine::Color color) {
+            getMainConfig().above_95.SetValue(color, true); 
         });
 
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 95%",
+            [colorPicker95]()
+            {
+            getMainConfig().above_95.SetValue(UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75));
+            colorPicker95->set_currentColor(getMainConfig().above_95.GetValue());
+            });
+
+        auto colorPicker90 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 90 %", getMainConfig().above_90.GetValue(),[](UnityEngine::Color color) {
+            getMainConfig().above_90.SetValue(color, true); 
+        });
+
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 90%",
+            [colorPicker90]()
+            {
+            getMainConfig().above_90.SetValue(UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
+            colorPicker90->set_currentColor(getMainConfig().above_90.GetValue());
+            });
+
+        auto colorPicker80 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 80 %", getMainConfig().above_80.GetValue(),[](UnityEngine::Color color) {
+            getMainConfig().above_80.SetValue(color, true); 
+        });
+
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 80%",
+            [colorPicker80]()
+            {
+            getMainConfig().above_80.SetValue(UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
+            colorPicker80->set_currentColor(getMainConfig().above_80.GetValue());
+            });
+
+        auto colorPicker70 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 70 %", getMainConfig().above_70.GetValue(),[](UnityEngine::Color color) {
+            getMainConfig().above_70.SetValue(color, true);
+        });
+
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 70%",
+            [colorPicker70]()
+            {
+                getMainConfig().above_70.SetValue(UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75));
+                colorPicker70->set_currentColor(getMainConfig().above_70.GetValue());
+            });
+        auto colorPicker60 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 60 %", getMainConfig().above_60.GetValue(),[](UnityEngine::Color color) {
+            getMainConfig().above_60.SetValue(color, true); 
+        });
+
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 60%",
+            [colorPicker60]()
+            {
+            getMainConfig().above_60.SetValue(UnityEngine::Color(0.47265625,0.32421875,0.99609375,0.75));
+            colorPicker60->set_currentColor(getMainConfig().above_60.GetValue());
+            });
+
+        auto colorPicker50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        above 50 %", getMainConfig().above_50.GetValue(),[](UnityEngine::Color color) {
+            getMainConfig().above_50.SetValue(color, true);
+        });
+
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset above 50%",
+            [colorPicker50]()
+            {
+            getMainConfig().above_50.SetValue(UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
+            colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
+            });
+
+        auto colorPicker_50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "        below 50 %", getMainConfig().below_50.GetValue(),[](UnityEngine::Color color) {
+            getMainConfig().below_50.SetValue(color, true); 
+            
+        });
+
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset below 50%",
+            [colorPicker_50]()
+            {
+            getMainConfig().below_50.SetValue(UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
+            colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
+            });
+
+
+        QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset all colors",
+        [colorPicker50,colorPicker60,colorPicker70,colorPicker80,colorPicker90,colorPicker_50,colorPicker95]()
+        {
+            getMainConfig().above_95.SetValue(UnityEngine::Color(0.64453125,0.06640625,0.99609375,0.75));
+            getMainConfig().above_90.SetValue(UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
+            getMainConfig().above_80.SetValue(UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
+            getMainConfig().above_70.SetValue(UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75));
+            getMainConfig().above_60.SetValue(UnityEngine::Color(0.47265625,0.32421875,0.99609375,0.75));
+            getMainConfig().above_50.SetValue(UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
+            getMainConfig().below_50.SetValue(UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
+            colorPicker95->set_currentColor(getMainConfig().above_95.GetValue());
+            colorPicker90->set_currentColor(getMainConfig().above_90.GetValue());
+            colorPicker80->set_currentColor(getMainConfig().above_80.GetValue());
+            colorPicker70->set_currentColor(getMainConfig().above_70.GetValue());
+            colorPicker60->set_currentColor(getMainConfig().above_60.GetValue());
+            colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
+            colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
+        });
     }
 }       
 
@@ -187,7 +290,6 @@ extern "C" void load() {
     QuestUI::Register::RegisterMainMenuModSettingsViewController(modInfo, DidActivate);
 
     getLogger().info("Installing hooks...");
-        INSTALL_HOOK(getLogger(),Results_lights)
         INSTALL_HOOK(getLogger(),Main_menu)
         INSTALL_HOOK(getLogger(),Song_select)
         INSTALL_HOOK(getLogger(),ResultsScreenUI);
