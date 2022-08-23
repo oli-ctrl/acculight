@@ -7,6 +7,7 @@ current features:
 - ~~custom colors in the song complete screen~~ (soon)
 - customising the colors
 - color previews 
+##
 known issues:
  - first time installing the mod the health and safety screen is white, i cba to fix this cos it only happens once
 
