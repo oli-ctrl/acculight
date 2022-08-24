@@ -19,8 +19,7 @@
 #include "GlobalNamespace/LevelSearchViewController.hpp"
 #include "GlobalNamespace/SongController.hpp"
 #include "System/Action.hpp"
-
-
+#include "GlobalNamespace/GameplayLevelSceneTransitionEvents.hpp"
 
 
 DEFINE_CONFIG(MainConfig)
@@ -51,12 +50,10 @@ MAKE_HOOK_MATCH(ResultsScreenUI, &ResultsViewController::Init, void, ResultsView
     getLogger().info("userScorefor this song is %f", userScore);
     getLogger().info("The percentage is %f", percentage);
 
-
-    getLogger().info("result screen song complete %d", updatelights);
     updatelights = true;
+    getLogger().info("result screen song complete %d", updatelights);
     UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
     };
-
 
 
 // song select open, toggle change light false unless 
@@ -67,14 +64,12 @@ MAKE_HOOK_MATCH(Song_select, &LevelCollectionViewController::DidActivate, void ,
 }
 
 
-
 //leave song select
 MAKE_HOOK_MATCH(Song_select_exit, &LevelCollectionViewController::DidDeactivate, void, LevelCollectionViewController *self,bool removedFromHierarchy, bool screenSystemDisabling){
     Song_select_exit( self, removedFromHierarchy, screenSystemDisabling);
     getLogger().info("leaving main menu");
     updatelights = false;
 }
-
 
 
 // main menu 
@@ -369,4 +364,3 @@ extern "C" void load() {
         INSTALL_HOOK(getLogger(),Song_select_exit);
     getLogger().info("Installed all hooks!");
 }
-// yes
