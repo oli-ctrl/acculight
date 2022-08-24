@@ -369,3 +369,4 @@ extern "C" void load() {
         INSTALL_HOOK(getLogger(),Song_select_exit);
     getLogger().info("Installed all hooks!");
 }
+// yes
