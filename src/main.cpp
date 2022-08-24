@@ -201,7 +201,8 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             {
                 getMainConfig().above_95.SetValue(UnityEngine::Color(0.99609375,0.99609375,0.0,0.75));
                 colorPicker95->set_currentColor(getMainConfig().above_95.GetValue());
-                
+                preview_acc = 0;
+                UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
 
         auto colorPicker90 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 90 %", getMainConfig().above_90.GetValue(),[](UnityEngine::Color color) {
@@ -217,7 +218,8 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             {
                 getMainConfig().above_90.SetValue(UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
                 colorPicker90->set_currentColor(getMainConfig().above_90.GetValue());
-                
+                preview_acc = 0;
+                UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
 
         auto colorPicker80 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 80 %", getMainConfig().above_80.GetValue(),[](UnityEngine::Color color) {
@@ -233,6 +235,8 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             {
                 getMainConfig().above_80.SetValue(UnityEngine::Color(0.4453125,0.828125,0.79296875,0.75));
                 colorPicker80->set_currentColor(getMainConfig().above_80.GetValue());
+                preview_acc = 0;
+                UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
 
         auto colorPicker70 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 70 %", getMainConfig().above_70.GetValue(),[](UnityEngine::Color color) {
@@ -248,6 +252,8 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             {
                 getMainConfig().above_70.SetValue(UnityEngine::Color(0.29296875,0.5703125,0.99609375,0.75));
                 colorPicker70->set_currentColor(getMainConfig().above_70.GetValue());
+                preview_acc = 0;
+                UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
         auto colorPicker60 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 60 %", getMainConfig().above_60.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_60.SetValue(color, true); 
@@ -262,6 +268,8 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             {
                 getMainConfig().above_60.SetValue(UnityEngine::Color(0.47265625,0.32421875,0.99609375,0.75));
                 colorPicker60->set_currentColor(getMainConfig().above_60.GetValue());
+                preview_acc = 0;
+                UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
 
         auto colorPicker50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "above 50 %", getMainConfig().above_50.GetValue(),[](UnityEngine::Color color) {
@@ -275,9 +283,11 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         QuestUI::BeatSaberUI::CreateUIButton(colorPicker50->get_transform(), "Reset above 50%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
         [colorPicker50]()
             {
-                preview_acc = 40;
+                preview_acc = 41;
                 getMainConfig().above_50.SetValue(UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
                 colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
+                preview_acc = 0;
+                UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
 
         auto colorPicker_50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "below 50 %", getMainConfig().below_50.GetValue(),[](UnityEngine::Color color) {
@@ -292,6 +302,8 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             {
                 getMainConfig().below_50.SetValue(UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
                 colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
+                preview_acc = 0;
+                UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
 
 
