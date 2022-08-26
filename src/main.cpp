@@ -193,7 +193,7 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         // Create a container that has a scroll bar.
         GameObject* container = QuestUI::BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
        
-        QuestUI::BeatSaberUI::CreateText(container->get_transform(), "change the color presets here:");
+        QuestUI::BeatSaberUI::CreateText(container->get_transform(), "change the color presets here");
         auto colorPicker95 = BeatSaberUI::CreateColorPicker (container->get_transform(), "above 95 %", getMainConfig().above_95.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_95.SetValue(color, true);
             (getMainConfig().updatelights_preview.SetValue(true));
