@@ -14,7 +14,6 @@ DECLARE_CONFIG(MainConfig,
     CONFIG_VALUE(above_60, UnityEngine::Color, "above 60%", UnityEngine::Color(0.47265625,0.32421875,0.99609375,0.75));
     CONFIG_VALUE(above_50, UnityEngine::Color, "above 50%", UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
     CONFIG_VALUE(below_50, UnityEngine::Color, "below 50%", UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
-    CONFIG_VALUE(failed_acc, UnityEngine::Color, "failed", UnityEngine::Color(1.0, 0, 0, 0.75));
 
 
 
@@ -31,6 +30,5 @@ DECLARE_CONFIG(MainConfig,
         CONFIG_INIT_VALUE(above_60);
         CONFIG_INIT_VALUE(above_50);
         CONFIG_INIT_VALUE(below_50);
-        CONFIG_INIT_VALUE(failed_acc);
     )
 )

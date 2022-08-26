@@ -42,6 +42,7 @@ MAKE_HOOK_MATCH(ResultsScreenUI_didactivate, &ResultsViewController::DidActivate
     updatelights = true;
     UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
 }
+
 // calculate percentage things
 MAKE_HOOK_MATCH(ResultsScreenUI_init, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore){
     ResultsScreenUI_init(self,levelCompletionResults,transformedBeatmapData,difficultyBeatmap,practice,newHighScore);
@@ -101,11 +102,8 @@ MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWi
 
     if (updatelights == true){
 
-        getLogger().info("updating lights");
-        if (getMainConfig().last_acc.GetValue() == 150){
-            color = getMainConfig().failed_acc.GetValue();
-        }
-        else if(getMainConfig().last_acc.GetValue() > 95) {
+        
+        if(getMainConfig().last_acc.GetValue() > 95) {
             //purple
             color = getMainConfig().above_95.GetValue();
             
@@ -137,7 +135,7 @@ MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWi
         }
     }
         
-    else if ((getMainConfig().updatelights_preview.GetValue()) == true){
+    if ((getMainConfig().updatelights_preview.GetValue()) == true){
         getLogger().info("updating lights");
 
 
@@ -291,32 +289,32 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
         QuestUI::BeatSaberUI::CreateUIButton(colorPicker50->get_transform(), "Reset above 50%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
         [colorPicker50]()
             {
-                preview_acc = 41;
+                preview_acc = 51;
                 getMainConfig().above_50.SetValue(UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
                 colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
-                preview_acc = 0;
                 UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             });
 
-        auto colorPicker_50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "below 50 %", getMainConfig().below_50.GetValue(),[](UnityEngine::Color color) {
+        auto colorPicker_below_50 = BeatSaberUI::CreateColorPicker(container->get_transform(), "below 50 %", getMainConfig().below_50.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().below_50.SetValue(color, true);
+            preview_acc = 0;
             (getMainConfig().updatelights_preview.SetValue(true)); 
             UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
             (getMainConfig().updatelights_preview.SetValue(false));
         });
 
-        QuestUI::BeatSaberUI::CreateUIButton(colorPicker_50->get_transform(), "Reset below 50%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
-        [colorPicker_50]()
+        QuestUI::BeatSaberUI::CreateUIButton(colorPicker_below_50->get_transform(), "Reset below 50%",UnityEngine::Vector2(0,+0.1),UnityEngine::Vector2(30,8),
+        [colorPicker_below_50]()
             {
                 getMainConfig().below_50.SetValue(UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
-                colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
-                preview_acc = 0;
+                colorPicker_below_50->set_currentColor(getMainConfig().below_50.GetValue());
                 UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
+                preview_acc = 0;
             });
 
 
         QuestUI::BeatSaberUI::CreateUIButton(container->get_transform(), "Reset all colors",
-        [colorPicker50,colorPicker60,colorPicker70,colorPicker80,colorPicker90,colorPicker_50,colorPicker95](){
+        [colorPicker50,colorPicker60,colorPicker70,colorPicker80,colorPicker90,colorPicker95, colorPicker_below_50](){
             // reset colors
             getMainConfig().above_95.SetValue(UnityEngine::Color(0.99609375,0.99609375,0.0,0.75));
             getMainConfig().above_90.SetValue(UnityEngine::Color(0.4453125,0.828125,0.33984375,0.75));
@@ -325,7 +323,6 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             getMainConfig().above_60.SetValue(UnityEngine::Color(0.47265625,0.32421875,0.99609375,0.75));
             getMainConfig().above_50.SetValue(UnityEngine::Color(0.9296875,0.5078125,0.9296875,0.75));
             getMainConfig().below_50.SetValue(UnityEngine::Color(1.0, 1.0, 1.0, 0.75));
-            getMainConfig().failed_acc.SetValue(UnityEngine::Color(1.0, 0, 0, 0.75));
             // reload the color pickers
             colorPicker95->set_currentColor(getMainConfig().above_95.GetValue());
             colorPicker90->set_currentColor(getMainConfig().above_90.GetValue());
@@ -333,7 +330,7 @@ void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToH
             colorPicker70->set_currentColor(getMainConfig().above_70.GetValue());
             colorPicker60->set_currentColor(getMainConfig().above_60.GetValue());
             colorPicker50->set_currentColor(getMainConfig().above_50.GetValue());
-            colorPicker_50->set_currentColor(getMainConfig().below_50.GetValue());
+            colorPicker_below_50->set_currentColor(getMainConfig().below_50.GetValue());
             preview_acc = 0;
             // reload lights
             UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
