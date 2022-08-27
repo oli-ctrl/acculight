@@ -22,7 +22,7 @@
 #include "GlobalNamespace/GameplayLevelSceneTransitionEvents.hpp"
 #include "UnityEngine/SceneManagement/SceneManager.hpp"
 #include "UnityEngine/SceneManagement/Scene.hpp"
-
+#include "GlobalNamespace/HealthWarningViewController.hpp"
 
 
 DEFINE_CONFIG(MainConfig)
@@ -37,11 +37,20 @@ float percentage, userScore, preview_acc;
 bool updatelights;
 GlobalNamespace::MenuLightsManager *menuLightsmanager;
 
+// results screen ui 
 MAKE_HOOK_MATCH(ResultsScreenUI_didactivate, &ResultsViewController::DidActivate, void, GlobalNamespace::ResultsViewController*self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     ResultsScreenUI_didactivate( self, firstActivation, addedToHierarchy, screenSystemEnabling);
     updatelights = true;
     UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
 }
+
+// health and safety 
+MAKE_HOOK_MATCH(health_and_safety, &HealthWarningViewController::DidActivate, void, GlobalNamespace::HealthWarningViewController *self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+    health_and_safety( self, firstActivation, addedToHierarchy, screenSystemEnabling);
+    updatelights = false;
+    UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuLightsManager*>().First()->RefreshColors();
+}
+
 
 // calculate percentage things
 MAKE_HOOK_MATCH(ResultsScreenUI_init, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore){
@@ -70,8 +79,9 @@ MAKE_HOOK_MATCH(ResultsScreenUI_init, &ResultsViewController::Init, void, Result
 // song select open, toggle change light false unless 
 MAKE_HOOK_MATCH(Song_select, &LevelCollectionViewController::DidActivate, void , LevelCollectionViewController *self , bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
     Song_select( self, firstActivation, addedToHierarchy, screenSystemEnabling);
-        updatelights = true;
-        getLogger().info("true - song select song complete%d", updatelights);   
+    getLogger().info("song select open");
+    updatelights = true;
+  
 }
 
 
@@ -121,6 +131,7 @@ MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWi
         else if(getMainConfig().last_acc.GetValue() > 70) {
             //blue
             color = getMainConfig().above_70.GetValue();
+            
         }
         else if(getMainConfig().last_acc.GetValue() > 60) {
             //magenta
@@ -134,7 +145,7 @@ MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWi
             
         }
     }
-        
+        // preview the lights in the color select screen
     if ((getMainConfig().updatelights_preview.GetValue()) == true){
         getLogger().info("updating lights");
 
@@ -176,9 +187,6 @@ MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWi
 
 
 
-
-
-
 // Loads the config from disk using our modInfo, then returns it for use
 // other config tools such as config-utils don't use this config, so it can be removed if those are in use
 Configuration& getConfig() {
@@ -186,13 +194,15 @@ Configuration& getConfig() {
     return config;
 }
 
+
 // ui stuffs
 void DidActivate(HMUI::ViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     // Create our UI elements only when shown for the first time.
     if(firstActivation) {
         // Create a container that has a scroll bar.
         GameObject* container = QuestUI::BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
-       
+
+
         QuestUI::BeatSaberUI::CreateText(container->get_transform(), "change the color presets here");
         auto colorPicker95 = BeatSaberUI::CreateColorPicker (container->get_transform(), "above 95 %", getMainConfig().above_95.GetValue(),[](UnityEngine::Color color) {
             getMainConfig().above_95.SetValue(color, true);
