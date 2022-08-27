@@ -53,7 +53,8 @@ MAKE_HOOK_MATCH(health_and_safety, &HealthWarningViewController::DidActivate, vo
 
 
 // calculate percentage things
-MAKE_HOOK_MATCH(ResultsScreenUI_init, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore){
+MAKE_HOOK_MATCH(ResultsScreenUI_init, &ResultsViewController::Init, void, ResultsViewController* self, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData,
+IDifficultyBeatmap* difficultyBeatmap, bool practice, bool newHighScore){
     ResultsScreenUI_init(self,levelCompletionResults,transformedBeatmapData,difficultyBeatmap,practice,newHighScore);
     getLogger().info("RESULT SCREEN OPENED :D");
     
