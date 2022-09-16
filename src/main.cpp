@@ -108,11 +108,9 @@ getLogger().info("main menu");
 
 //manage the lights and change depending on accuracy 
 MAKE_HOOK_MATCH(LightsUpdater, &LightWithIdManager::SetColorForId, void, LightWithIdManager *self, int lightId, UnityEngine::Color color){
-    getLogger().info("lights update hook: %d", updatelights);
-
 
     if (updatelights == true){
-
+        
         
         if(getMainConfig().last_acc.GetValue() > 95) {
             //purple
