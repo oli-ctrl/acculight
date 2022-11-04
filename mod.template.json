@@ -7,7 +7,7 @@
   "version": "0.1.1",
   "packageId": "com.beatgames.beatsaber",
   "coverImage": "cover.png",
-  "packageVersion": "1.22.0",
+  "packageVersion": "1.25.1",
   "description": "changes the lighting on the result screen depending on the accuracy gained in the song",
   "dependencies": [],
   "modFiles": [],
