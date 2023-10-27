@@ -10,7 +10,7 @@ changes the lighting on the result screen depending on the accuracy gained in th
 
 ## known issues:
 
- - first time installing the mod the health and safety screen is white, i cba to fix this cos it only happens once
+ - first time installing the mod the health and safety screen is white, i cba to fix this because it only happens once
 
 ## Credits
 
